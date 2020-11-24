@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 public class MainController {
     @Autowired
@@ -18,17 +20,20 @@ public class MainController {
     @GetMapping("init")
     public ResponseEntity<String> init(){
         Counter counter = new Counter();
-        counter.setCounter(1);
+        counter.setCounter(0);
         counterRepository.save(counter);
         return new ResponseEntity<String>("Success",HttpStatus.OK);
     }
     @GetMapping("count")
-    public ResponseEntity<Integer> count(){
+    public ResponseEntity<String> count(){
+            String pass = System.getenv("pass");
+            String user = System.getenv("user");
             Counter counter = (Counter) counterRepository.getOne(1l);
             counter.setCounter(counter.getCounter()+1);
             counterRepository.save(counter);
-            return new ResponseEntity<Integer>(counter.getCounter(), HttpStatus.OK);
+            System.out.println(user + pass);
+            return new ResponseEntity<String>("User from env:" + user + " Pass from env: " + pass + "Counter: " + counter.getCounter(), HttpStatus.OK);
         }
-    
+
 
 }
