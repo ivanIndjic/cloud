@@ -1,0 +1,81 @@
+version: "3.8"
+services:
+  go:
+    env_file:
+      - user.env
+    build:
+      context: "."
+    image: fakultet_go:v2
+    #deploy:
+    #  replicas: 3
+    #  placement:
+    #    constraints:
+    #      - "node.role==worker"
+    #  restart_policy:
+    #    condition: on-failure
+    #    delay: 5s
+    #    max_attempts: 3
+    #  rollback_config:
+    #    order: start-first
+    #    failure_action: pause
+    #  update_config:
+    #    order: start-first
+    #    delay: 5s
+    #    failure_action: rollback
+    ports:
+      - published: 8080
+        target: 8080
+        protocol: tcp
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/hz"]
+      start_period: 15s
+      timeout: 10s
+      interval: 50s
+      retries: 3
+    volumes:
+      - type: volume
+        target: /home/ivan/project
+        source: project
+    depends_on:
+      - mysql
+    networks:
+      #- cstm-overlay
+       - cstm-bridge
+  mysql:
+    env_file:
+      - config.env
+    image: mysql:5.7
+    #deploy:
+    #  placement:
+    #    constraints:
+    #      - "node.role==manager"
+    #  restart_policy:
+    #    condition: on-failure
+    #    delay: 5s
+    #    max_attempts: 3
+    #  rollback_config:
+    #    order: start-first
+    #    failure_action: pause
+    #  update_config:
+    #    order: start-first
+    #    delay: 5s
+    #    failure_action: rollback
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - published: 3308
+        target: 3306
+        protocol: tcp
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      #- cstm-overlay
+       - cstm-bridge
+volumes:
+  project:
+  db_data:
+    
+networks:
+  cstm-overlay:
+    driver: overlay
+  cstm-bridge:
+    driver: bridge
