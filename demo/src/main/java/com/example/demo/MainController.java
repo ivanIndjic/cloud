@@ -20,6 +20,9 @@ public class MainController {
     @GetMapping("init")
     public ResponseEntity<String> init(){
         Counter counter = new Counter();
+        String pass = System.getenv("pass");
+        String user = System.getenv("user");
+        System.out.println("User env: " + user + " Pass env: " + pass);
         counter.setCounter(0);
         counterRepository.save(counter);
         return new ResponseEntity<String>("Success",HttpStatus.OK);
@@ -31,8 +34,7 @@ public class MainController {
             Counter counter = (Counter) counterRepository.getOne(1l);
             counter.setCounter(counter.getCounter()+1);
             counterRepository.save(counter);
-            System.out.println(user + pass);
-            return new ResponseEntity<String>("User from env:" + user + " Pass from env: " + pass + "Counter: " + counter.getCounter(), HttpStatus.OK);
+            return new ResponseEntity<String>("Counter: " + counter.getCounter(), HttpStatus.OK);
         }
 
 
