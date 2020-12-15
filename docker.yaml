@@ -1,8 +1,8 @@
 ---
-- name: Install docker
+- name: Install docker and docker-compose
   hosts: vm
   become: yes
-  any_errors_fatal: true # If one task on eny server fails, ansible will stop execution on all servers
+  any_errors_fatal: true # If one task on any server fails, ansible will stop execution on all servers
   tasks:
     - name: Update and upgrade packages
       meta: flush_handlers
@@ -17,9 +17,9 @@
          - software-properties-common
          - gnupg2
     - name: Import repository key
-      apt_key: 
+      apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
-        state: present 
+        state: present
     - name: Get release
       shell: "lsb_release -cs"
       register: release
@@ -70,9 +70,28 @@
     - name: Print docker info
       debug:
         msg: "{{ info.stdout_lines }}"
+    - name: Get Docker compose
+      get_url: 
+        url: "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-Linux-x86_64"
+        dest: /usr/local/bin/docker-compose
+    - name: Make it executable
+      command: chmod +x  /usr/local/bin/docker-compose
+    - name: Make symbolic link
+      file:
+        src: /usr/local/bin/docker-compose
+        dest: /usr/bin/docker-compose
+        state: link
+    - name: Build image
+      command: docker-compose build
+      args:
+        chdir: /vagrant/fakultet
+    - name: Run services
+      command: docker-compose up -d
+      args:
+        chdir: /vagrant/fakultet
+
   handlers:
     - name: Update
       apt:
         update_cache: yes
-          #upgrade: dist
-          #force_apt_get: yes
+
