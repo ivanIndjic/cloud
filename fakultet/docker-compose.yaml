@@ -32,10 +32,10 @@ services:
       timeout: 10s
       interval: 50s
       retries: 3
-    volumes:
-      - type: volume
-        target: /home/ivan/project
-        source: project
+#    volumes:
+ #     - type: volume
+  #      target: /home/ivan/project
+   #     source: project
     depends_on:
       - mysql
     networks:
@@ -73,7 +73,7 @@ services:
 volumes:
   project:
   db_data:
-    
+
 networks:
   cstm-overlay:
     driver: overlay
