@@ -90,6 +90,7 @@
       args:
         chdir: /vagrant/fakultet
 
+
   handlers:
     - name: Update
       apt:
