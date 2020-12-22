@@ -1,6 +1,21 @@
 version: "3.8"
 services:
-  go:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: nginx
+    ports:
+      - published: 9999
+        target: 80
+        protocol: tcp
+    depends_on:
+      - go1
+      - go2
+    networks:
+      - cstm-bridge
+  go1:
+    container_name: go1
     env_file:
       - user.env
     build:
@@ -41,6 +56,50 @@ services:
     networks:
       #- cstm-overlay
        - cstm-bridge
+
+  go2:
+      container_name: go2
+      env_file:
+        - user2.env
+      build:
+        context: "."
+      image: fakultet_go:v2
+      #deploy:
+      #  replicas: 3
+      #  placement:
+      #    constraints:
+      #      - "node.role==worker"
+      #  restart_policy:
+      #    condition: on-failure
+      #    delay: 5s
+      #    max_attempts: 3
+      #  rollback_config:
+      #    order: start-first
+      #    failure_action: pause
+      #  update_config:
+      #    order: start-first
+      #    delay: 5s
+      #    failure_action: rollback
+      ports:
+        - published: 8081
+          target: 8080
+          protocol: tcp
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:8081/hz"]
+        start_period: 15s
+        timeout: 10s
+        interval: 50s
+        retries: 3
+  #    volumes:
+  #     - type: volume
+    #      target: /home/ivan/project
+    #     source: project
+      depends_on:
+        - mysql
+      networks:
+        #- cstm-overlay
+        - cstm-bridge
+
   mysql:
     env_file:
       - config.env
