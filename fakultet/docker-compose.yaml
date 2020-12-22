@@ -52,7 +52,7 @@ services:
   #      target: /home/ivan/project
    #     source: project
     depends_on:
-      - mysql
+      - mysql1
     networks:
       #- cstm-overlay
        - cstm-bridge
@@ -95,12 +95,13 @@ services:
     #      target: /home/ivan/project
     #     source: project
       depends_on:
-        - mysql
+        - mysql2
       networks:
         #- cstm-overlay
         - cstm-bridge
 
-  mysql:
+  mysql1:
+    container_name: mysql1
     env_file:
       - config.env
     image: mysql:5.7
@@ -125,13 +126,45 @@ services:
         target: 3306
         protocol: tcp
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data1:/var/lib/mysql
+    networks:
+      #- cstm-overlay
+       - cstm-bridge
+
+  mysql2:
+    container_name: mysql2
+    env_file:
+      - config.env
+    image: mysql:5.7
+    #deploy:
+    #  placement:
+    #    constraints:
+    #      - "node.role==manager"
+    #  restart_policy:
+    #    condition: on-failure
+    #    delay: 5s
+    #    max_attempts: 3
+    #  rollback_config:
+    #    order: start-first
+    #    failure_action: pause
+    #  update_config:
+    #    order: start-first
+    #    delay: 5s
+    #    failure_action: rollback
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - published: 3309
+        target: 3306
+        protocol: tcp
+    volumes:
+      - db_data2:/var/lib/mysql
     networks:
       #- cstm-overlay
        - cstm-bridge
 volumes:
   project:
-  db_data:
+  db_data1:
+  db_data2:
 
 networks:
   cstm-overlay:
