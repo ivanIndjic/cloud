@@ -56,6 +56,7 @@ func query(w http.ResponseWriter, req *http.Request) {
 	user := os.Getenv("user")
 	pass := os.Getenv("password")
 	host := os.Getenv("db_host")
+	go_host := os.Getenv("go_host")
 	fmt.Println(user + pass + host)
 	db, err := sql.Open("mysql", user+":"+pass+"@tcp("+host+":3306)/")
 	if err != nil {
@@ -83,6 +84,7 @@ func query(w http.ResponseWriter, req *http.Request) {
 		defer stmt.Close()
 
 		fmt.Fprintf(w, "Counter: %d\n", counter.Count)
+		fmt.Fprintf(w, "Hello from %s\n", string(go_host))
 
 	}
 }
