@@ -1,1 +1,1 @@
-Trigger an action
+Trigger an action for docker build and push
