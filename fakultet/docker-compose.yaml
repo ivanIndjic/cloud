@@ -85,7 +85,7 @@ services:
           target: 8080
           protocol: tcp
       healthcheck:
-        test: ["CMD", "curl", "-f", "http://localhost:8081/hz"]
+        test: ["CMD", "curl", "-f", "http://localhost:8080/hz"]
         start_period: 15s
         timeout: 10s
         interval: 50s
