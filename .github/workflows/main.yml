@@ -2,7 +2,7 @@ name: CI for pushing and building a docker image on docker hub
 
 on:
   push:
-    branches: main
+    branches: development
 
 jobs:
   main:
