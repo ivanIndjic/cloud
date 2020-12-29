@@ -18,9 +18,9 @@ services:
     container_name: go1
     env_file:
       - user.env
-    build:
-      context: "."
-    image: fakultet_go:v2
+        #build:
+        #context: "."
+    image: ivanindjic/cloud:automate
     #deploy:
     #  replicas: 3
     #  placement:
@@ -61,9 +61,9 @@ services:
       container_name: go2
       env_file:
         - user2.env
-      build:
-        context: "."
-      image: fakultet_go:v2
+          #build:
+          #context: "."
+      image: ivanindjic/cloud:automate
       #deploy:
       #  replicas: 3
       #  placement:
